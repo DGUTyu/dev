@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ttsTool</string>
+    <string name="confirm">确认</string>
+    <string name="clear">清空</string>
+    <string name="nice_to_meet_you">你好，很高兴认识你</string>
+    <string name="please_input_text_to_speech">请输入转语音文本</string>
+    <string name="download_audio">下载音频</string>
+    <string name="please_input_server_domain">请输入服务器域名</string>
+    <string name="enable_file_storage_permission">请手动开启文件存储权限</string>
+    <string name="save_audio_requires_permission">保存音频需要开启文件存储权限</string>
+    <string name="file_path">文件路径：</string>
+    <string name="current_server_address">当前服务器地址为：\n</string>
+    <string name="network_not_available">当前网络不可用！</string>
+</resources>

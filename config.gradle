@@ -1,0 +1,18 @@
+ext {
+    android = [
+            compileSdkVersion: 30,
+            buildToolsVersion: "30.0.0",
+            minSdkVersion    : 21,
+            targetSdkVersion : 30,
+            appVersionName   : "0.0.1",
+    ]
+
+    host = "{" +
+            "\"https://www.baidu.com/\"," +
+            "\"https://www.pgyer.com/\"," +
+            "}"
+}
+
+
+
+

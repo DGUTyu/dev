@@ -1,0 +1,155 @@
+plugins {
+    id 'com.android.application'
+}
+
+def rootAndroidId = rootProject.ext.android
+def host = rootProject.ext.host
+
+static def buildTime() {
+    def date = new Date()
+    def formattedDate = date.format('MMddHHmmss')
+    return formattedDate
+}
+
+def getAppVersionCode() {
+    String versionName = getAppVersionName()
+    def versions = versionName.split("\\.")
+    def updateVersionString = ""
+    for (int i = 0; i < versions.size(); i++) {
+        def subString = versions[i]
+        if (i == 0) {
+            updateVersionString += subString
+            continue
+        } else if (i >= 3) {
+            break
+        }
+        def subNumber = Integer.parseInt(subString)
+        updateVersionString += String.format("%02d", subNumber)
+    }
+    return Integer.parseInt(updateVersionString)
+}
+
+def getAppVersionName() {
+    return rootProject.ext.android["appVersionName"]
+}
+
+def appVersionCode = getAppVersionCode()
+def appVersionName = getAppVersionName()
+
+android {
+    lintOptions {
+        disable "ResourceType"
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/proguard/coroutines.pro'
+    }
+
+    def storePW = "asdfghjkl"
+    def alias = "key0"
+    def password = "rxjava"
+    def filePath = "../keystore/testApp.jks"
+
+    signingConfigs {
+        release {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(storePW)
+            v2SigningEnabled true
+        }
+
+        debug {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(storePW)
+            v2SigningEnabled true
+        }
+
+        dexOptions {
+            //使用增量模式构建
+            incremental true
+            //最大堆内存
+            javaMaxHeapSize "8g"
+            //是否支持大工程模式
+            jumboMode = true
+            //预编译
+            preDexLibraries = false
+            //线程数
+            threadCount = 8
+        }
+
+        compileOptions {
+            sourceCompatibility 1.8
+            targetCompatibility 1.8
+        }
+
+    }
+
+    compileSdkVersion rootAndroidId.compileSdkVersion
+    buildToolsVersion rootAndroidId.buildToolsVersion
+    defaultConfig {
+        applicationId "com.example.dev"
+        minSdkVersion rootAndroidId.minSdkVersion
+        targetSdkVersion rootAndroidId.targetSdkVersion
+        versionCode appVersionCode
+        versionName appVersionName
+        multiDexEnabled true//解决方法数量超过65536个时无法编译的问题
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            debuggable false
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            signingConfig signingConfigs.release
+            debuggable true
+            minifyEnabled false
+            shrinkResources false
+            jniDebuggable true
+            renderscriptDebuggable true
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'   // aar目录
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            // 使用 applicationId 获取应用程序的名称
+            def applicationId = variant.applicationId
+            // 获取最后一个单词
+            def words = applicationId.split("\\.")
+            def lastWord = words[words.length - 1]
+            outputFileName = "${lastWord}_${buildType.name}_v${defaultConfig.versionName}_${buildTime()}.apk";
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+    implementation 'com.squareup.okhttp3:mockwebserver:3.14.9'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    implementation 'com.squareup.picasso:picasso:2.8'
+    //安卓工具类库
+    implementation 'com.blankj:utilcodex:1.31.1'
+}
