@@ -28,6 +28,7 @@ import java.util.List;
 import com.example.dev.BuildConfig;
 import com.example.dev.R;
 import com.example.dev.utils.CommonUtils;
+import com.example.dev.utils.KotlinUtils;
 import com.example.dev.utils.OkHttpUtils;
 import com.example.dev.utils.PreferenceUtil;
 import okhttp3.Call;
@@ -78,6 +79,7 @@ public class MainActivity extends BaseActivity {
         //是否下载mp3
         download = PreferenceUtil.getBoolean("DownLoad", false);
         iv_down.setImageResource(download ? R.mipmap.iv_switch_open : R.mipmap.iv_switch_close);
+        KotlinUtils.Companion.showToast(this, "hello");
     }
 
     private void initListener() {
